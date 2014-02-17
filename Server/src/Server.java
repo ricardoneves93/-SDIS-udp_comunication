@@ -3,7 +3,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Server {
@@ -82,7 +81,7 @@ public class Server {
 		{
 			if(splitted.length == 2)
 			{
-				return 1;
+				return 1;//The lookup is possible
 			}
 		}
 		return -1;
