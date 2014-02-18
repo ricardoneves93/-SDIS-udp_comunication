@@ -1,15 +1,13 @@
-import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
 class UDPClient
 {
-	private static BufferedReader inFromUser;
 	private static DatagramSocket clientSocket;
 	private static InetAddress IPAddress;
 	static byte[] sendData;
 	static byte[] receiveData;
-	static boolean isRunning = true;
+	static boolean isRunning = true; //boolean to control when the program exits
 	static Scanner sc;
 	
 	
@@ -23,10 +21,12 @@ class UDPClient
 	public static void main(String args[]) throws Exception
 	{
 		UDPClient client = new UDPClient();
-		client.start("172.30.74.194");
+		client.start("192.168.1.4");
 		
 		while(isRunning)
 		{
+			sendData = new byte[1024];
+			receiveData = new byte[1024];
 			String sentence = sc.nextLine();
 			if(sentence.equals("STOP") || sentence.equals("stop"))
 			{
@@ -40,7 +40,6 @@ class UDPClient
 			clientSocket.receive(receivePacket);
 			String modifiedSentence = new String(receivePacket.getData());
 			System.out.println("FROM SERVER:" + modifiedSentence);
-			sc.nextLine();
 			
 
 		
@@ -53,4 +52,4 @@ class UDPClient
 		IPAddress = InetAddress.getByName(Ip);
 		
 	}
-} 	
+} 
