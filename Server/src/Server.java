@@ -60,7 +60,7 @@ public class Server {
 	
 	private int compareData(String sentence) {
 		
-		String[] splitted = sentence.split(" ");
+		String[] splitted = sentence.split(" ");//Editado no browser
 		
 		if(splitted[0].equals("REGISTER"))
 		{
