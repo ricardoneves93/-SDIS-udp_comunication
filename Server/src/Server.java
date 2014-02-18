@@ -12,7 +12,7 @@ public class Server {
 	private String sentence;
 	private byte[] sendData;
 	private byte[] receiveData;
-	String errorString, alreadyOnString, registedString;
+	String[] Infos = {"The Instruction isn't well formed", "This data is already stored", "Item sucessefully registed"};
 
 	public Server() throws SocketException
 	{
@@ -21,9 +21,6 @@ public class Server {
 
 		sendData = new byte[1024];//apaga os comentarios IGOR já!
 		receiveData = new byte[1024];
-		errorString = "The Instruction isn't well formed";
-		alreadyOnString = "This data is already stored";
-		registedString = "Item sucessefully registed";
 	}
 
 	private void start() throws IOException {
@@ -36,35 +33,18 @@ public class Server {
 			System.out.println("tamanho buffer: " + receivePacket.getLength());
 			sentence = new String(receivePacket.getData());
 			System.out.println(sentence);
-			Integer info;
-
+			String info;
 			info = compareData(sentence);
-
 			InetAddress IpAddress = receivePacket.getAddress();
-
 			int port = receivePacket.getPort();
-
-			if(info == 0)
-			{
-				sendData = registedString.getBytes();
-			}
-			if(info == -1)
-			{
-				sendData = errorString.getBytes();
-			}
-			else if(info == -2)
-			{
-				sendData = alreadyOnString.getBytes();
-			}
-
+			sendData = info.getBytes();
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IpAddress, port);
-
 			serverSocket.send(sendPacket);
 			sentence=null; 
 		}
 	}
 
-	private int compareData(String sentence) {
+	private String compareData(String sentence) {
 
 		String[] splitted = sentence.split(" ");//Editado no browser
 
@@ -72,13 +52,15 @@ public class Server {
 		{
 			if(splitted.length == 3)
 			{
-				if(data.get(splitted[1]) == null)
+				if(!splitted[1].matches("([0-9A-Z][0-9A-Z]-){2}[0-9A-Z][0-9A-Z]"))
+					return "Matricula mal formada";
+				if(data.get(splitted[1]) == null && splitted[1].matches("([0-9A-Z][0-9A-Z]-){2}[0-9A-Z][0-9A-Z]"))
 				{
 					data.put(splitted[1].trim(), splitted[2].trim());
-					return 0;
+					return Infos[2];
 				}
 				else
-					return -2; //Is already registed
+					return Infos[1]; //Is already registed
 
 			}
 		}
@@ -86,28 +68,30 @@ public class Server {
 		{
 			if(splitted.length == 2)
 			{
-				makeLookup(splitted[1].trim());
+				String ownerName;
+				ownerName = makeLookup(splitted[1].trim());
 				System.out.println(splitted[1]);
-				return 1;//The lookup is possible
+				return ownerName;//The lookup is possible
 			}
 		}
-		return -1;
+		return Infos[0];
 
 
 	}
 
-	private void makeLookup(String plate) {
+	private String makeLookup(String plate) {
 		String ownerName = data.get(plate);
 		if(ownerName != null)
-		{
-			System.out.println("Nome: " + ownerName);
-		}
-		else System.out.println("nao tem");
+			return ownerName;
+		return ownerName;
 		
 	}
 
 	public static void main(String[] args) throws Exception
 	{
+		if("AA-AA-AA".matches("([0-9A-Z][0-9A-Z]-){2}[0-9A-Z][0-9A-Z]"))
+			System.out.println("match"); 
+		else System.out.println("nao match");
 		Server myServer = new Server();
 		myServer.start();
 	}
