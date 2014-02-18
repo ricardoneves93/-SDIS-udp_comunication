@@ -18,7 +18,7 @@ public class Server {
 		data = new HashMap<String, String>(); 
 		serverSocket = new DatagramSocket(9876);//igor1234
 		
-		sendData = new byte[1024];
+		sendData = new byte[1024];//apaga os comentarios IGOR já!
 		receiveData = new byte[1024];
 		errorString = "The Instruction isn't well formed";
 		alreadyOnString = "This data is already stored";
