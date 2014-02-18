@@ -63,7 +63,7 @@ public class Server {
 		
 		String[] splitted = sentence.split(" ");
 		
-		if(splitted[0].equals("REGISTER"))
+		if(splitted[0].equals("REGISTER"))//Portatil
 		{
 			if(splitted.length == 3)
 			{
