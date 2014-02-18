@@ -16,7 +16,7 @@ public class Server {
 	public Server() throws SocketException
 	{
 		data = new HashMap<String, String>(); 
-		serverSocket = new DatagramSocket(9876);//igor
+		serverSocket = new DatagramSocket(9876);//igor12
 		
 		sendData = new byte[1024];
 		receiveData = new byte[1024];
