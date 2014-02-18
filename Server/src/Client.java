@@ -29,6 +29,7 @@ class UDPClient
 			sendData = new byte[1024];
 			receiveData = new byte[1024];
 			String sentence = sc.nextLine();
+			//This allows user to stop program
 			if(sentence.equals("STOP") || sentence.equals("stop"))
 			{
 				isRunning = false;
@@ -42,8 +43,6 @@ class UDPClient
 			String modifiedSentence = new String(receivePacket.getData());
 			System.out.println("FROM SERVER:" + modifiedSentence);
 			
-
-		
 		}
 		clientSocket.close();
 	}
