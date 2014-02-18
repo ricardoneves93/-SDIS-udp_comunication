@@ -25,6 +25,7 @@ class UDPClient
 		
 		while(isRunning)
 		{
+			//Need to create new buffers 
 			sendData = new byte[1024];
 			receiveData = new byte[1024];
 			String sentence = sc.nextLine();
