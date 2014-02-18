@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 
 class UDPClient
 {
@@ -9,11 +10,12 @@ class UDPClient
 	static byte[] sendData;
 	static byte[] receiveData;
 	static boolean isRunning = true;
+	static Scanner sc;
 	
 	
 	public UDPClient()
 	{
-		inFromUser = new BufferedReader(new InputStreamReader(System.in));
+		sc = new Scanner(System.in);
 		sendData = new byte[1024];
 		receiveData = new byte[1024];
 	}
@@ -25,7 +27,7 @@ class UDPClient
 		
 		while(isRunning)
 		{
-			String sentence = inFromUser.readLine();
+			String sentence = sc.nextLine();
 			if(sentence.equals("STOP") || sentence.equals("stop"))
 			{
 				isRunning = false;
@@ -38,6 +40,9 @@ class UDPClient
 			clientSocket.receive(receivePacket);
 			String modifiedSentence = new String(receivePacket.getData());
 			System.out.println("FROM SERVER:" + modifiedSentence);
+			sc.nextLine();
+			
+
 		
 		}
 		clientSocket.close();
