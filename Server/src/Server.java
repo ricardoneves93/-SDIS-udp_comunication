@@ -13,6 +13,9 @@ public class Server {
 	private byte[] sendData;
 	private byte[] receiveData;
 	String[] Infos = {"The Instruction isn't well formed", "This data is already stored", "Item sucessefully registed", "Wrong plate format"};
+	
+	//Adicionar args
+	
 
 	public Server() throws SocketException
 	{
@@ -84,10 +87,13 @@ public class Server {
 		return ownerName;
 		
 	}
+	
 
 	public static void main(String[] args) throws Exception
 	{
 		Server myServer = new Server();
 		myServer.start();
 	}
+		
+	
 }
