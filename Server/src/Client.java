@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.net.*;
 import java.util.Scanner;
 
@@ -5,53 +6,59 @@ import javax.swing.JFrame;
 
 class UDPClient
 {
-	private static DatagramSocket clientSocket;
-	private static InetAddress IPAddress;
-	static byte[] sendData;
-	static byte[] receiveData;
-	static boolean isRunning = true; //boolean to control when the program exits
-	static Scanner sc;
-	
-	
+	private DatagramSocket clientSocket;
+	private InetAddress IPAddress;
+	private byte[] sendData;
+	private byte[] receiveData; 
+	private String action;
+	private String plate;
+	private String name;
+	private String sentence;
+
 	public UDPClient()
 	{
-		sc = new Scanner(System.in);
+		
 		sendData = new byte[1024];
 		receiveData = new byte[1024];
 	}
-	
+
 	public static void main(String args[]) throws Exception
 	{
 		UDPClient client = new UDPClient();
-		client.start("255.255.255.255");
-		
-		while(isRunning)
-		{
-			//Need to create new buffers 
-			sendData = new byte[1024];
-			receiveData = new byte[1024];
-			String sentence = sc.nextLine();
-			//This allows user to stop program
-			if(sentence.equals("STOP") || sentence.equals("stop"))
-			{
-				isRunning = false;
-				break;
-			}
-			sendData = sentence.getBytes();
-			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
-			clientSocket.send(sendPacket);
-			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-			clientSocket.receive(receivePacket);
-			String modifiedSentence = new String(receivePacket.getData());
-			System.out.println("FROM SERVER:" + modifiedSentence);
-			
-		}
-		clientSocket.close();
+		client.start("255.255.255.255", args);
 	}
-
-	private void start(String Ip) throws SocketException, UnknownHostException {
+	
+	public void start(String Ip, String args[]) throws IOException {
 		clientSocket = new DatagramSocket();
 		IPAddress = InetAddress.getByName(Ip);
+
 		
+		//lookup e register
+		action = args[0];
+		plate = args[1];
+		//register
+		if(args.length>2)
+		{
+			name = args[2];
+			sentence = new String(action + " " + plate + " " + name);
+		}
+		else sentence = new String(action + " " + plate);
+		
+		System.out.println(sentence);
+		//Need to create new buffers 
+		sendData = new byte[1024];
+		receiveData = new byte[1024];
+		
+
+
+		sendData = sentence.getBytes();
+		DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
+		clientSocket.send(sendPacket);
+		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+		clientSocket.receive(receivePacket);
+		String modifiedSentence = new String(receivePacket.getData());
+		System.out.println("FROM SERVER:" + modifiedSentence);
+
+		clientSocket.close();
 	}
 } 
