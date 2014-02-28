@@ -1,6 +1,8 @@
 import java.net.*;
 import java.util.Scanner;
 
+import javax.swing.JFrame;
+
 class UDPClient
 {
 	private static DatagramSocket clientSocket;
@@ -21,7 +23,7 @@ class UDPClient
 	public static void main(String args[]) throws Exception
 	{
 		UDPClient client = new UDPClient();
-		client.start("192.168.1.4");
+		client.start("255.255.255.255");
 		
 		while(isRunning)
 		{
