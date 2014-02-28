@@ -14,7 +14,7 @@ public class Server {
 	private byte[] receiveData;
 	String[] Infos = {"The Instruction isn't well formed", "This data is already stored", "Item sucessefully registed", "Wrong plate format"};
 	
-	//Adicionar argumentos
+	//Adicionar argumentos lol
 	
 
 	public Server() throws SocketException
