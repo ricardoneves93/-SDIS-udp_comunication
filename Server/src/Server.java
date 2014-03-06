@@ -2,31 +2,64 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.util.HashMap;
 
-public class Server {
+public class Server{
 
 	private HashMap<String, String> data;
 	private DatagramSocket serverSocket;
+	private MulticastSocket multiSocket;
 	private String sentence;
 	private byte[] sendData;
 	private byte[] receiveData;
 	String[] Infos = {"The Instruction isn't well formed", "This data is already stored", "Item sucessefully registed", "Wrong plate format"};
-	
-	//Adicionar argumentos lol
+	private int port = 9876;
+	private String group = "224.0.0.2";
+	private int ttl = 1;
 	
 
 	public Server() throws SocketException
 	{
 		data = new HashMap<String, String>(); 
-		serverSocket = new DatagramSocket(9876);//igor1234
+		serverSocket = new DatagramSocket(port);
 
-		sendData = new byte[1024];//apaga os comentarios IGOR já!
+		sendData = new byte[1024];
 		receiveData = new byte[1024];
 	}
 
-	private void start() throws IOException {
+	private void init() throws IOException {
+		
+		multiSocket = new MulticastSocket();
+		Thread t = new Thread()
+		{
+			@SuppressWarnings("deprecation")
+			public void run()
+			{
+				while(true)
+				{
+					InetSocketAddress d = new InetSocketAddress(group, port);
+					try {
+						sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					byte[] hello = ("hello").getBytes();
+					DatagramPacket h = new DatagramPacket(hello, hello.length, d.getAddress(), d.getPort());
+					try {
+						multiSocket.send(h, (byte) ttl);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		
+		t.start();
+		
 		while(true)
 		{
 			receiveData = new byte[1024];
@@ -39,7 +72,15 @@ public class Server {
 			info = compareData(sentence);
 			InetAddress IpAddress = receivePacket.getAddress();
 			int port = receivePacket.getPort();
-			sendData = info.getBytes();
+			//if(info == null)
+				//sendData = "Plate not found".getBytes();
+			try{
+				sendData = info.getBytes();
+			}
+			catch(Exception e)
+			{
+				sendData = "plate not found".getBytes();
+			}
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IpAddress, port);
 			serverSocket.send(sendPacket);
 			sentence=null; 
@@ -84,7 +125,7 @@ public class Server {
 		String ownerName = data.get(plate);
 		if(ownerName != null)
 			return ownerName;
-		return ownerName;
+		else return ownerName;
 		
 	}
 	
@@ -92,8 +133,7 @@ public class Server {
 	public static void main(String[] args) throws Exception
 	{
 		Server myServer = new Server();
-		myServer.start();
+		myServer.init();
 	}
-		
 	
 }
